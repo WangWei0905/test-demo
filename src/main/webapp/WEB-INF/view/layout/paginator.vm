@@ -1,0 +1,147 @@
+<div class="panelBar">
+	#set($pg = $paginator)
+	<div class="pages">
+		<span>显示</span>
+		<select class="combox" name="numPerPage" onchange="javascript:paginator.setPageSize(this.value);">
+			<option value="10" #if($pg.pageSize ==10) selected #end >10</option>
+			<option value="20" #if($pg.pageSize ==20) selected #end >20</option>
+			<option value="30" #if($pg.pageSize ==30) selected #end >30</option>
+		</select>
+		<span>条，共$!{pg.totalCount}条</span>
+	</div>    
+	<div class="pagination">
+		<ul>
+			
+			#if($pg.pageNum ==1 )
+			<li class="j-first disabled">
+				<span class="first"><span>首页</span></span>	
+			</li>			
+			#else
+			<li class="j-first">
+				<a href="javascript:paginator.pageBreak(1);" class="first"><span>首页</span></a>
+			</li>
+			#end
+			
+			
+			#if($pg.pageNum ==1 )
+			<li class="j-prev disabled">
+				<span class="previous"><span>上一页</span></span>		
+			</li>	
+			#else
+			<li class="j-prev">
+				<a href="javascript:paginator.pageBreak($pg.getPreviousPageNum());" class="previous"><span>上一页</span></a>
+			</li>
+			#end
+				
+			</li>
+			
+			#set($pns = $pg.getSlider(5))
+			#foreach($pn in $pns)	
+                #if($pn == $pg.pageNum)
+           	<li class="selected j-num">
+				<a href="javascript:;">$pn</a>
+			</li>
+                #else
+            <li class="j-num">
+				<a href="javascript:paginator.pageBreak($pn);">$pn</a>
+			</li>
+                #end
+            #end          
+			#if($pg.pageNum == $pg.getPageTotalCount() || $pg.getPageTotalCount() == 0)		
+			<li class="j-next disabled">		
+				<span class="next"><span>下一页</span></span>
+			</li>
+			#else
+			<li class="j-next">	
+				<a href="javascript:paginator.pageBreak($pg.getNextPageNum());" class="next"><span>下一页</span></a>
+			</li>
+			#end
+			
+			
+			#if($pg.pageNum == $pg.getPageTotalCount() || $pg.getPageTotalCount() == 0)	
+			<li class="j-last disabled">
+				<span class="last"><span>末页</span></span>
+			</li>
+			#else	
+			<li class="j-last">
+				<a href="javascript:paginator.pageBreak($pg.getPageTotalCount());" class="last"><span>末页</span></a>
+			</li>
+			#end	
+			<li class="jumpto">
+				<input type="text" id="txtPageNo" value="$!{pg.pageNum}" size="4" class="textInput">
+				<input type="button" value="确定" class="goto" onclick="javascript:paginator.pageBreak($('#txtPageNo').val());">
+			</li>
+		</ul>
+	</div>
+
+<script type="text/javascript">
+	/*翻页对象*/
+	function Paginator(){
+	
+		this.pageForm_Id = "form";
+		this.pageNum_Name = "pageNum";
+		this.pageSize_Name = "pageSize";
+		this.pageSizeSelect_Name = "numPerPage";
+		this.pageSize = $!{pg.pageSize};
+		this.pageNum = 1;
+		
+		/*翻页*/
+		Paginator.prototype.pageBreak = function(pageNum){
+
+			if(!/^[0-9]*$/.test(pageNum)){
+				return;
+			}
+			
+			this.pageNum = pageNum;
+    		this.createHiddenInput(this.pageNum_Name,this.pageNum);
+			
+			$form = $('#' + this.pageForm_Id);
+			if($form.length > 0){
+				document.forms[this.pageForm_Id].submit();
+			}
+		};
+	
+	    /*设置每页显示的记录数*/
+		Paginator.prototype.setPageSize = function(pageSize){
+
+			if(!/^[0-9]*$/.test(pageSize)){
+				return;
+			}
+			this.pageSize = pageSize;
+			this.createHiddenInput(this.pageSize_Name,this.pageSize);
+		};
+		
+		/*动态创建hidden控件*/
+		Paginator.prototype.createHiddenInput = function(name,value){
+			
+			var $inputHidden = $("input[name='" + name + "']");
+			if($inputHidden.length > 0){				
+				$inputHidden.val(value);
+				return;
+			}
+		
+			$("<input>",{
+		        type:'hidden',
+		        val:value,
+		        name:name
+	    	}).appendTo("#" + this.pageForm_Id);
+		};
+		
+		/*指定的fromid，以及页码大小select控件ID*/
+		Paginator.prototype.init = function(formId){	
+			var $select = $("select[name='" + this.pageSizeSelect_Name + "']");
+			if(	$select.length > 0){	
+				this.pageSize = $select.val();
+			}
+			
+			this.pageForm_Id = formId;
+			
+			this.createHiddenInput(this.pageNum_Name,this.pageNum);
+    		this.createHiddenInput(this.pageSize_Name,this.pageSize);
+		};
+	};
+		
+	var paginator = new Paginator();	
+	paginator.init("form");
+</script>
+</div>

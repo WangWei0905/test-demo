@@ -1,0 +1,164 @@
+<!DOCTYPE html>  
+<html>  
+  <head>  
+    <title>测试菜单异步加载</title>  
+      
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">  
+    <meta http-equiv="description" content="this is my page">  
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">  
+      
+    <link rel="stylesheet" type="text/css" href="${rc.contextPath}/htdocs/plugins/zTree_v3/css/zTreeStyle/zTreeStyle.css">  
+    <script type="text/javascript" src="${rc.contextPath}/htdocs/plugins/jquery.1.12.4.min.js"></script>  
+<!--     <script type="text/javascript" src="${rc.contextPath}/htdocs/plugins/zTree_v3/js/jquery.ztree.core.min.js"></script>   -->
+<!--     <script type="text/javascript" src="${rc.contextPath}/htdocs/plugins/zTree_v3/js/jquery.ztree.excheck.min.js"></script>   -->
+<!--   	<script type="text/javascript" src="${rc.contextPath}/htdocs/plugins/zTree_v3/js/jquery.ztree.exedit.min.js"></script>  -->
+  	<script type="text/javascript" src="${rc.contextPath}/htdocs/plugins/zTree_v3/js/jquery.ztree.all.min.js"></script> 
+  </head>  
+    
+  <body>  
+  	<center>
+  		测试菜单异步加载
+  	</center>
+<!--     <div class="zTreeDemoBackground left"><ul id="treeDemo" class="ztree"></ul></div>   -->
+  </body> 
+   <SCRIPT type="text/javascript" >  
+  //<!--  
+     //var ztreeObj;//树对象  
+     //初始化目录节点，可进入页面由ACTION传值过来。静态的在用字符串作为id时，要用""或''包起来，否则不能识别  
+        var zNodes =[  
+        {id:1, pId:0, name:"渠道酬金管理目录",open:true},  
+        {id:101, pId:1, name:"目录1",  open:false},  
+        {id:102, pId:1, name:"目录2", isParent:true, open:false},  
+        {id:103, pId:1, name:"目录3", isParent:true, open:false}         
+       ];  
+    var setting = {  
+        view: {  
+            dblClickExpand: false,//双击节点时，是否自动展开父节点的标识  
+            showLine: true,//显示下划线  
+            selectedMulti: false,//设置是否允许同时选中多个节点。  
+            expandSpeed: 400//"slow"//节点展开速度  
+        },  
+        data: {  
+            simpleData: {//是否为简单数据类型JSON  
+                enable:true,  
+                idKey: "id",//使用简单必须标明的的节点对应字段  
+                pIdKey: "pId",//使用简单必须标明的的父节点对应字段  
+                rootPId:null//根  
+            }  
+        },  
+        async: {  
+                enable: true,//异步加载  
+                //请求地址，可用function动态获取  
+                url:"${rc.contextPath}/MenusTo/ajax.do",  
+                contentType:"application/x-www-form-urlencoded",//按照标准的 Form 格式提交参数  
+                autoParam:["id", "pId"],//提交的节点参数，可用“id=xx”取请求提交时的别名  
+                //otherParam:{"otherParam":"zTreeAsyncTest"},//提交的其他参数,json的形式  
+                dataType:"json",//返回数据类型  
+                type:"post",//请求方式  
+                dataFilter: null//数据过滤  
+                },  
+        callback: {  
+            onClick:reLoadOpenURL,//节点被点击时调用的函数  
+            onAsyncError: onAsyncError,//异步加载失败调用的函数      
+            //onExpand: zTreeOnExpand,//用于捕获节点被展开的事件回调函数  
+            beforeExpand: zTreeBeforeExpand,//用于捕获父节点展开之前的事件回调函数，并且根据返回值确定是否允许展开操作  
+          }  
+     };  
+     //如果是父节点不处理，如果是子节点，打开对应的连接  
+     function reLoadOpenURL(event, treeId, treeNode){  
+     //alert(treeNode.tId + ", " + treeNode.name+","+treeNode.id);   
+     var zTree = $.fn.zTree.getZTreeObj(treeId);  
+                if (treeNode.isParent) {//如果是父节点  
+                    //zTree.reAsyncChildNodes(treeNode, "refresh",false);//异步刷新，清空后加载，加载后打开  
+                    if(treeNode.open){//父节点为展开状态，折叠父节点  
+                    //alert(treeNode.open);  
+                    zTree.expandNode(treeNode,false,true,true,false);  
+                    //expandNode参数说明：节点，展开(true)/折叠(false)，是否影响子孙节点，是否设置焦点，是否触发beforeExpand/onExpand或beforeCollapse/onCollapse事件回调函数  
+                      }                   
+                    else{//父节点是折叠的  
+                    if(treeNode.id!=1)zTreeBeforeExpand(treeId, treeNode);//如果不是根节点（本例根节点为1），则强制异步刷新子节点数据  
+                    else  
+                    zTree.expandNode(treeNode,true,false,true,false);//如果是根节点则展开  
+                    }  
+                    return false;  
+                } else {//不是父节点，打开对应链接  
+                    $("#testIframe").attr("src",treeNode.file + ".html");  
+                    return true;  
+                }  
+                  
+                  
+            }  
+    //用于捕获父节点展开之前的事件回调函数，并且根据返回值确定是否允许展开操作 ，false不代开      
+     function zTreeBeforeExpand(treeId, treeNode) {  
+          var zTree = $.fn.zTree.getZTreeObj(treeId);  
+                  if (treeNode.isParent&&treeNode.id!="1") {  
+                    zTree.reAsyncChildNodes(treeNode, "refresh");//异步刷新，清空后加载，加载后打开,需要不打开加参数true  
+                    return false;//使用了异步强行加载，如果用true,节点展开将不会按照expandSpeed属性展开，false将按照设定速度展开  
+                    }  
+                 else {  
+                    return true;  
+                     }  
+              };  
+     //用于捕获节点被展开后的事件回调函数      
+     function zTreeOnExpand(event, treeId, treeNode) {  
+                 alert(treeNode.tId + ", " + treeNode.name);  
+        };    
+      
+     //数据过滤方法，如后台数据已确认无误可直接返回数据，不需注册此回调函数  
+     function filter(treeId, parentNode, childNodes) {  
+            if (!childNodes) return null;  
+            return childNodes;  
+        }  
+     //异步加载失败时调用的方法  
+     function onAsyncError(event, treeId, treeNode, XMLHttpRequest, textStatus, errorThrown) {  
+            alert("加载失败！");  
+        }  
+          
+        //初始化树  
+     $(document).ready(function(){  
+           $.fn.zTree.init($("#treeDemo"), setting, zNodes);  
+        });   
+          
+               
+      /** 
+      function callOnClick(event,treeId, treeNode) { 
+                 var zTree = $.fn.zTree.getZTreeObj(treeId); 
+                if (treeNode.isParent) {//如果是父节点 
+                    //zTree.reAsyncChildNodes(treeNode, "refresh",false);//异步刷新，清空后加载，加载后打开 
+                    if(treeNode.open){//父节点为展开状态，折叠父节点 
+                    //alert(treeNode.open); 
+                    zTree.expandNode(treeNode,false,true,true,false); 
+                    //expandNode参数说明：节点，展开(true)/折叠(false)，是否影响子孙节点，是否设置焦点，是否触发beforeExpand/onExpand或beforeCollapse/onCollapse事件回调函数 
+                      }                  
+                    else{//父节点是折叠的 
+                    if(treeNode.id!=1)zTreeBeforeExpand(treeId, treeNode);//如果不是根节点（本例根节点为1），则强制异步刷新子节点数据 
+                    else 
+                    zTree.expandNode(treeNode,true,false,true,false);//如果是根节点则展开 
+                    } 
+                    return false; 
+                } else {//不是父节点，打开对应链接 
+                    $(parent.document).find('#testFrame').attr('src', treeNode.file + ".html"); 
+                    return true; 
+                }    
+            } 
+     */  
+  //-->  
+  </SCRIPT>  
+ </HEAD>  
+  
+<BODY>  
+<TABLE border=0 height=600px align=left width="100%">  
+    <TR>  
+        <TD colspan="2" STYLE="WIDTH: 100%;HEIGHT: 100PX;"><input type="hidden" name="author" value="BeiFangUniversity.09Software.YangLong"></TD>  
+    </TR>  
+    <TR>  
+        <TD width=160px align=left valign=top style="BORDER-RIGHT: #999999 1px dashed">  
+            <ul id="treeDemo" class="ztree"  style="width:225px; overflow:auto;"></ul>  
+        </TD>  
+        <TD width=770px align=left valign=top>  
+            <IFRAME ID="testIframe" Name="testIframe" FRAMEBORDER=0 SCROLLING=AUTO width=100%  height=600px SRC=""></IFRAME>  
+        </TD>  
+    </TR>  
+</TABLE>  
+</BODY>  
+</HTML> 

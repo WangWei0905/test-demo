@@ -1,0 +1,464 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.jala</groupId>
+	<artifactId>test-demo</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-${deploy.version}</version>
+	<name>test-demo</name>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<war.file.name>test-demo</war.file.name>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<org.springframework.version>3.2.4.RELEASE</org.springframework.version>
+		<cxf.version>2.7.14</cxf.version>
+	</properties>
+	<!-- 配置部署的远程仓库 -->
+  <distributionManagement>
+		<snapshotRepository>
+			<id>snapshot</id>
+			<name>Jala ec snapshot repository</name>
+			<url>http://112.65.232.151:4000/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+		<repository>
+			<id>releases</id>
+			<name>Jala ec releases repository</name>
+			<url>http://112.65.232.151:4000/nexus/content/repositories/releases/</url>
+		</repository>
+  </distributionManagement>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.nshen.log4j</groupId>
+			<artifactId>warning-log4j</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<!-- slf4j start add 可变参数 -->
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-log4j12</artifactId>
+   			<version>1.7.20</version>
+		</dependency>
+		 
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-log4j12</artifactId>
+		    <version>1.7.20</version>
+		</dependency>
+		<!-- slf4j end -->
+
+		<dependency> 
+			<groupId>org.projectlombok</groupId> 
+			<artifactId>lombok</artifactId> 
+			<version>1.16.10</version>
+			<scope>provided</scope> 
+		</dependency>
+	   
+	   <dependency>
+	    	<groupId>org.springframework</groupId>
+		    <artifactId>spring-aspects</artifactId>
+		    <version>${org.springframework.version}</version>
+		</dependency>
+
+		<!-- Various Application Context utilities, including EhCache, JavaMail, 
+			Quartz, and Freemarker integration Define this if you need any of these integrations -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<!-- Object-to-Relation-Mapping (ORM) integration with Hibernate, JPA, 
+			and iBatis. (depends on spring-core, spring-beans, spring-context, spring-tx) 
+			Define this if you need ORM (org.springframework.orm.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<!-- Object-to-XML Mapping (OXM) abstraction and integration with JAXB, 
+			JiBX, Castor, XStream, and XML Beans. (depends on spring-core, spring-beans, 
+			spring-context) Define this if you need OXM (org.springframework.oxm.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<!-- Web application development utilities applicable to both Servlet and 
+			Portlet Environments (depends on spring-core, spring-beans, spring-context) 
+			Define this if you use Spring MVC, or wish to use Struts, JSF, or another 
+			web framework with Spring (org.springframework.web.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<!-- Spring MVC for Servlet Environments (depends on spring-core, spring-beans, 
+			spring-context, spring-web) Define this if you use Spring MVC with a Servlet 
+			Container such as Apache Tomcat (org.springframework.web.servlet.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<!-- Spring MVC for Portlet Environments (depends on spring-core, spring-beans, 
+			spring-context, spring-web) Define this if you use Spring MVC with a Portlet 
+			Container (org.springframework.web.portlet.*) -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc-portlet</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<!-- Support for testing Spring applications with tools such as JUnit and 
+			TestNG This artifact is generally always defined with a 'test' scope for 
+			the integration testing framework and unit testing stubs -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${org.springframework.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.13</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- bg velocity -->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>1.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-tools</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<!-- ed velocity -->
+
+		<!-- bg mybatis -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+		<!-- end mybatis -->
+
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.0.5</version>
+		</dependency>
+		<!--<dependency>-->
+			<!--<groupId>com.oracle</groupId>-->
+			<!--<artifactId>ojdbc14</artifactId>-->
+			<!--<version>10.2.0.5</version>-->
+			<!--<scope>compile</scope>-->
+		<!--</dependency>-->
+		<dependency>
+    		<groupId>commons-fileupload</groupId>
+    		<artifactId>commons-fileupload</artifactId>
+    		<version>1.3</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-compress</artifactId>
+		    <version>1.13</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+		<!-- json处理 begin -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		<!-- json处理 end -->
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>fastjson</artifactId>
+		    <version>1.2.29</version>
+		</dependency>
+		 <dependency>
+		 	<groupId>net.sf.json-lib</groupId>
+		 	<artifactId>json-lib</artifactId>
+		 	<version>2.3</version>
+		 	<classifier>jdk15</classifier>
+		</dependency>
+<!-- 		<dependency> -->
+<!--             <groupId>org.codehaus.jackson</groupId> -->
+<!--             <artifactId>jackson-core-asl</artifactId> -->
+<!--             <version>1.9.12</version> -->
+<!--         </dependency> -->
+<!--         <dependency> -->
+<!--             <groupId>org.codehaus.jackson</groupId> -->
+<!--             <artifactId>jackson-mapper-asl</artifactId> -->
+<!--             <version>1.9.12</version> -->
+<!--         </dependency> -->
+        <dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-core</artifactId>
+	        <version>2.6.3</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.fasterxml.jackson.core</groupId>
+	        <artifactId>jackson-databind</artifactId>
+	        <version>2.6.3</version>
+    	</dependency> 
+    	<dependency>
+			  <groupId>org.apache.httpcomponents</groupId>
+			  <artifactId>httpclient</artifactId>
+			  <version>4.1.3</version>
+		</dependency>
+		<dependency>
+			    <groupId>org.apache.httpcomponents</groupId>
+			    <artifactId>httpcore</artifactId>
+			    <version>4.1.3</version>
+		</dependency>
+   		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.8</version>
+		</dependency>
+		<dependency>
+		    <groupId>commons-codec</groupId>
+		    <artifactId>commons-codec</artifactId>
+		    <version>1.9</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.google.zxing</groupId>
+		    <artifactId>core</artifactId>
+		    <version>3.0.0</version>
+		</dependency>
+    	
+    	<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.1</version>
+		</dependency>
+    	<dependency>  
+	       <groupId>com.github.miemiedev</groupId>  
+	       <artifactId>mybatis-paginator</artifactId>  
+	       <version>1.2.10</version>  
+    	</dependency>
+<!--     	<dependency> -->
+<!-- 		    <groupId>org.quartz-scheduler</groupId> -->
+<!-- 		    <artifactId>quartz</artifactId> -->
+<!-- 		    <version>1.8.6</version> -->
+<!-- 		</dependency> -->
+		<dependency>
+			<groupId>quartz</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.5.1</version>
+		</dependency>
+		<dependency>
+		    <groupId>net.sf.jxls</groupId>
+		    <artifactId>jxls-core</artifactId>
+		    <version>1.0</version>
+		</dependency>
+		
+		
+			<!-- cxf  start-->
+        <dependency>  
+		   <groupId>org.apache.cxf</groupId>  
+		   <artifactId>cxf-rt-frontend-jaxws</artifactId>  
+		   <version>${cxf.version}</version>  
+		</dependency>  
+		<dependency>  
+		    <groupId>org.apache.cxf</groupId>  
+		    <artifactId>cxf-rt-transports-http</artifactId>  
+		    <version>${cxf.version}</version>  
+		</dependency> 
+		
+		<!-- cxf end -->
+		
+		<!--<dependency>-->
+		  <!--<groupId>com.nshen</groupId>-->
+		  <!--<artifactId>nshen-idgenerator</artifactId>-->
+		  <!--<version>1.0.0-RELEASE</version>-->
+		  <!--<classifier>RELEASE</classifier>-->
+		<!--</dependency>-->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+	</dependencies>
+	<profiles>
+		<profile>
+			<id>dev</id>
+<!-- 			<activation> -->
+<!-- 			<activeByDefault>true</activeByDefault> -->
+<!-- 			</activation> -->
+			<properties>
+				<deploy.env>dev</deploy.env>
+				<deploy.version>SNAPSHOT</deploy.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<deploy.env>test</deploy.env>
+				<deploy.version>test-SNAPSHOT</deploy.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>idc</id>
+			<properties>
+				<deploy.env>idc</deploy.env>
+				<deploy.version>RELEASE</deploy.version>
+			</properties>
+		</profile>
+	</profiles>
+	<build>
+		<finalName>${war.file.name}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.24</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<version>1.1</version>
+				<configuration>
+					<path>/test-demo</path>
+					<port>8088</port>
+					<uriEncoding>UTF-8</uriEncoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<port>8088</port>
+					<path>/test-demo</path>
+					<uriEncoding>UTF-8</uriEncoding>
+					<server>tomcat7</server>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<!-- http://maven.apache.org/plugins/maven-war-plugin/ -->
+					<packagingExcludes>WEB-INF/web.xml</packagingExcludes>
+				</configuration>
+			</plugin>
+			<!--<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-antrun-plugin</artifactId> 
+				<version>1.2</version> <executions> <execution> <id>process-resources</id> 
+				<phase>process-resources</phase> <goals> <goal>run</goal> </goals> <configuration> 
+				<tasks> <echo message="copy resources ..."/> <copy todir="target\classes" 
+				overwrite="true"> <fileset dir="src\main\resources-${deploy.env}" /> </copy> 
+				</tasks> </configuration> </execution> </executions> </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.13</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include>
+						<include>*Test.java</include>
+					</includes>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+		<!-- 指定 filter <filters> <filter>src/mavenfilters/sys-${deploy.env}.properties</filter> 
+			</filters> -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources-${deploy.env}</directory>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                    <include>**/*.java</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+		</resources>
+	</build>
+	<reporting>
+		<plugins>
+			<!-- 提供单元测试整体覆盖率以及分支覆盖率 -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+		</plugins>
+	</reporting>
+
+</project>
+
