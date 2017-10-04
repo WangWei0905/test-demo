@@ -76,7 +76,7 @@ public class IndexAction {
 	//@RequiresPermissions("upms:system:create")
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
 	public String create() {
-		return "/manage/system/create.jsp";
+		return "/manage/system/create.html";
 	}
 
 	//@ApiOperation(value = "新增系统")
@@ -118,7 +118,7 @@ public class IndexAction {
 		//UpmsSystem system = upmsSystemService.selectByPrimaryKey(id);
 		UpmsSystem system = null;
 		modelMap.put("system", system);
-		return "/manage/system/update.jsp";
+		return "/manage/system/update.html";
 	}
 
 	//@ApiOperation(value = "修改系统")
